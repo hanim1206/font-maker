@@ -62,6 +62,7 @@ const norm = (a:Pt)=>{ const L=len(a)||1; return {x:a.x/L,y:a.y/L}; };
 const dist = (a:Pt,b:Pt)=> Math.hypot(a.x-b.x,a.y-b.y);
 const lerp = (a:Pt,b:Pt,t:number):Pt=>({x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t});
 
+// 데이터 -> svg
 function toPathD(shape: Shape): string {
   const p = d3Path();
   if (isPath(shape)) {
