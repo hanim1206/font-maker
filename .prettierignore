@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.next
+.vercel
+*.log
+yarn-error.log
+package-lock.json
+yarn.lock

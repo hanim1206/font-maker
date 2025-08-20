@@ -20,7 +20,9 @@ const Handle = ({
   return (
     <g {...bind()} style={{ cursor: 'grab' }}>
       <circle cx={p.x} cy={p.y} r={7} fill="transparent" stroke="#111" />
-      <text x={p.x + 10} y={p.y - 10} fontSize={12} fill="#111">{label}</text>
+      <text x={p.x + 10} y={p.y - 10} fontSize={12} fill="#111">
+        {label}
+      </text>
     </g>
   );
 };
@@ -41,7 +43,8 @@ export default function CurveEditor() {
   }, [p0, c1, c2, p1]);
 
   // 경계 박스(밖으로 못 나가게 하려면 clamp 로직 추가 가능)
-  const W = 500, H = 500;
+  const W = 500,
+    H = 500;
 
   const clamp = (x: number, min: number, max: number) =>
     Math.min(max, Math.max(min, x));
@@ -49,19 +52,35 @@ export default function CurveEditor() {
   const applyDrag =
     (setter: React.Dispatch<React.SetStateAction<Pt>>) =>
     (dx: number, dy: number) =>
-      setter((prev) => ({
+      setter(prev => ({
         x: clamp(prev.x + dx, 0, W),
         y: clamp(prev.y + dy, 0, H),
       }));
 
   return (
-    <div style={{ padding: 16 ,backgroundColor:"#eee"}}>
+    <div style={{ padding: 16, backgroundColor: '#eee' }}>
       <h3>Bezier Curve Editor (react-use-gesture + d3-path)</h3>
-      <svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`}
-           style={{ border: '1px solid #e5e7eb', borderRadius: 40, background: '#fff' }}>
+      <svg
+        width="100%"
+        height={H}
+        viewBox={`0 0 ${W} ${H}`}
+        style={{
+          border: '1px solid #e5e7eb',
+          borderRadius: 40,
+          background: '#fff',
+        }}
+      >
         {/* 보조선: 핸들 연결 */}
-        <path d={`M ${p0.x} ${p0.y} L ${c1.x} ${c1.y}`} stroke="#94a3b8" fill="none" />
-        <path d={`M ${p1.x} ${p1.y} L ${c2.x} ${c2.y}`} stroke="#94a3b8" fill="none" />
+        <path
+          d={`M ${p0.x} ${p0.y} L ${c1.x} ${c1.y}`}
+          stroke="#94a3b8"
+          fill="none"
+        />
+        <path
+          d={`M ${p1.x} ${p1.y} L ${c2.x} ${c2.y}`}
+          stroke="#94a3b8"
+          fill="none"
+        />
 
         {/* 실제 곡선 */}
         <path d={d} fill="none" stroke="#ef4444" strokeWidth={10} />
@@ -74,8 +93,8 @@ export default function CurveEditor() {
       </svg>
 
       <p style={{ marginTop: 8, color: '#374151' }}>
-        포인트(P0/P1)와 제어점(C1/C2)을 드래그해 곡선을 조정하세요.
-        d3-path가 <code>d</code> 문자열을 만들고, react-use-gesture가 드래그를 처리합니다.
+        포인트(P0/P1)와 제어점(C1/C2)을 드래그해 곡선을 조정하세요. d3-path가{' '}
+        <code>d</code> 문자열을 만들고, react-use-gesture가 드래그를 처리합니다.
       </p>
     </div>
   );

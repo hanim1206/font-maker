@@ -1,17 +1,17 @@
 export interface StrokeRel {
-  strokeId: string
-  x: number // 상대 박스 기준 0~1 좌표
-  y: number
-  width: number
-  height: number
-  direction: 'horizontal' | 'vertical'
+  strokeId: string;
+  x: number; // 상대 박스 기준 0~1 좌표
+  y: number;
+  width: number;
+  height: number;
+  direction: 'horizontal' | 'vertical';
 }
 
 export interface JamoData {
-  char: string
-  type: 'choseong' | 'jungseong' | 'jongseong'
-  box: { x: number; y: number; width: number; height: number }
-  strokes: StrokeRel[]
+  char: string;
+  type: 'choseong' | 'jungseong' | 'jongseong';
+  box: { x: number; y: number; width: number; height: number };
+  strokes: StrokeRel[];
 }
 
 export const CHOSEONG_LIST = [
@@ -34,7 +34,7 @@ export const CHOSEONG_LIST = [
   'ㅌ',
   'ㅍ',
   'ㅎ',
-]
+];
 export const JUNGSEONG_LIST = [
   'ㅏ',
   'ㅐ',
@@ -57,7 +57,7 @@ export const JUNGSEONG_LIST = [
   'ㅡ',
   'ㅢ',
   'ㅣ',
-]
+];
 export const JONGSEONG_LIST = [
   '',
   'ㄱ',
@@ -87,7 +87,7 @@ export const JONGSEONG_LIST = [
   'ㅌ',
   'ㅍ',
   'ㅎ',
-]
+];
 
 // 초성 ㄱ (U+1100)
 export const CHOSEONG_MAP: Record<string, JamoData> = {
@@ -114,7 +114,7 @@ export const CHOSEONG_MAP: Record<string, JamoData> = {
       },
     ],
   },
-}
+};
 
 // 중성 ㅣ (U+1175)
 export const JUNGSEONG_MAP: Record<string, JamoData> = {
@@ -133,7 +133,7 @@ export const JUNGSEONG_MAP: Record<string, JamoData> = {
       },
     ],
   },
-}
+};
 
 // 종성 ㅁ (U+11B7)
 export const JONGSEONG_MAP: Record<string, JamoData> = {
@@ -176,4 +176,4 @@ export const JONGSEONG_MAP: Record<string, JamoData> = {
       },
     ],
   },
-}
+};

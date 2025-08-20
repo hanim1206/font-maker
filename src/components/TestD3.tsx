@@ -46,17 +46,27 @@ function polygon(points: Array<{ x: number; y: number }>, closed = true): D {
 /** 큐빅 베지어로 만든 곡선 예시 */
 function cubicDemo(x: number, y: number): D {
   const p = d3Path();
-  p.moveTo(x, y);                    // 시작점
-  p.bezierCurveTo(                   // C (cx1, cy1, cx2, cy2, x, y)
-    x + 60, y - 80,
-    x + 140, y + 80,
-    x + 200, y
+  p.moveTo(x, y); // 시작점
+  p.bezierCurveTo(
+    // C (cx1, cy1, cx2, cy2, x, y)
+    x + 60,
+    y - 80,
+    x + 140,
+    y + 80,
+    x + 200,
+    y
   );
   return p.toString();
 }
 
 /** 부채꼴(원호) */
-function wedge(cx: number, cy: number, r: number, startDeg: number, endDeg: number): D {
+function wedge(
+  cx: number,
+  cy: number,
+  r: number,
+  startDeg: number,
+  endDeg: number
+): D {
   const toRad = (deg: number) => (deg * Math.PI) / 180;
   const p = d3Path();
   const sx = cx + r * Math.cos(toRad(startDeg));
@@ -114,15 +124,24 @@ export default function TestD3() {
         width="100%"
         height={H}
         viewBox={`0 0 ${W} ${H}`}
-        style={{ background: '#fff', border: '1px solid #e5e7eb', borderRadius: 8 }}
+        style={{
+          background: '#fff',
+          border: '1px solid #e5e7eb',
+          borderRadius: 8,
+        }}
       >
         {/* 격자 */}
         <g opacity={0.5}>
           {dGrid.map((d, i) => {
-            console.log("d",d)
-            return(
-            <path key={`g-${i}`} d={d} stroke={i%10?"#9ca3af":"red"} fill="none" />
-          )
+            console.log('d', d);
+            return (
+              <path
+                key={`g-${i}`}
+                d={d}
+                stroke={i % 10 ? '#9ca3af' : 'red'}
+                fill="none"
+              />
+            );
           })}
         </g>
 
@@ -135,9 +154,17 @@ export default function TestD3() {
       </svg>
 
       <ol style={{ marginTop: 12, color: '#374151' }}>
-        <li><b>d3Path()</b>로 “가상의 캔버스 컨텍스트”를 만들고,</li>
-        <li><b>moveTo/lineTo/arc/quadraticCurveTo/bezierCurveTo</b>를 호출해서 경로를 쌓은 뒤,</li>
-        <li><b>toString()</b>으로 SVG <code>d</code> 문자열을 얻어 <code>&lt;path d="..." /&gt;</code>에 꽂습니다.</li>
+        <li>
+          <b>d3Path()</b>로 “가상의 캔버스 컨텍스트”를 만들고,
+        </li>
+        <li>
+          <b>moveTo/lineTo/arc/quadraticCurveTo/bezierCurveTo</b>를 호출해서
+          경로를 쌓은 뒤,
+        </li>
+        <li>
+          <b>toString()</b>으로 SVG <code>d</code> 문자열을 얻어{' '}
+          <code>&lt;path d="..." /&gt;</code>에 꽂습니다.
+        </li>
       </ol>
     </div>
   );
