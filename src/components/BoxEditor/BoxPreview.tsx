@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useJamoStore } from '../../stores/jamoStore'
 import { decomposeSyllable } from '../../utils/hangulUtils'
 import { SvgRenderer } from '../../renderers/SvgRenderer'
 import type { LayoutType, BoxConfig, DecomposedSyllable } from '../../types'
@@ -26,6 +27,7 @@ const LAYOUT_SAMPLES: Record<LayoutType, string> = {
 }
 
 export function BoxPreview({ layoutType, boxes, syllable: providedSyllable, onEditJamo }: BoxPreviewProps) {
+  const { choseong, jungseong, jongseong } = useJamoStore()
   const sampleChar = LAYOUT_SAMPLES[layoutType]
   const [hoveredPart, setHoveredPart] = useState<string | null>(null)
 
@@ -33,8 +35,8 @@ export function BoxPreview({ layoutType, boxes, syllable: providedSyllable, onEd
     if (providedSyllable) {
       return providedSyllable
     }
-    return decomposeSyllable(sampleChar)
-  }, [providedSyllable, sampleChar])
+    return decomposeSyllable(sampleChar, choseong, jungseong, jongseong)
+  }, [providedSyllable, sampleChar, choseong, jungseong, jongseong])
 
   const displayChar = providedSyllable ? providedSyllable.char : sampleChar
 

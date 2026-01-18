@@ -1,8 +1,5 @@
 import type { DecomposedSyllable, JamoData, LayoutType } from '../types'
 import {
-  CHOSEONG_MAP,
-  JUNGSEONG_MAP,
-  JONGSEONG_MAP,
   CHOSEONG_LIST,
   JUNGSEONG_LIST,
   JONGSEONG_LIST,
@@ -18,7 +15,12 @@ export function classifyJungseong(char: string): 'vertical' | 'horizontal' | 'mi
 }
 
 // ===== 음절 분해 =====
-export function decomposeSyllable(char: string): DecomposedSyllable {
+export function decomposeSyllable(
+  char: string,
+  choseongMap: Record<string, JamoData>,
+  jungseongMap: Record<string, JamoData>,
+  jongseongMap: Record<string, JamoData>
+): DecomposedSyllable {
   const code = char.charCodeAt(0)
 
   // 완성형 음절 (가-힣)
@@ -32,9 +34,9 @@ export function decomposeSyllable(char: string): DecomposedSyllable {
     const jungseongChar = JUNGSEONG_LIST[jungseongIndex]
     const jongseongChar = JONGSEONG_LIST[jongseongIndex]
 
-    const choseong = CHOSEONG_MAP[choseongChar] || null
-    const jungseong = JUNGSEONG_MAP[jungseongChar] || null
-    const jongseong = jongseongChar ? JONGSEONG_MAP[jongseongChar] || null : null
+    const choseong = choseongMap[choseongChar] || null
+    const jungseong = jungseongMap[jungseongChar] || null
+    const jongseong = jongseongChar ? jongseongMap[jongseongChar] || null : null
 
     const layoutType = classifyLayout(choseong, jungseong, jongseong)
 
@@ -49,7 +51,7 @@ export function decomposeSyllable(char: string): DecomposedSyllable {
 
   // 자음 단독 (ㄱ-ㅎ)
   if (code >= 0x3131 && code <= 0x314e) {
-    const choseong = Object.values(CHOSEONG_MAP).find((j) => j.char === char) || null
+    const choseong = Object.values(choseongMap).find((j) => j.char === char) || null
     return {
       char,
       choseong,
@@ -61,7 +63,7 @@ export function decomposeSyllable(char: string): DecomposedSyllable {
 
   // 모음 단독 (ㅏ-ㅣ)
   if (code >= 0x314f && code <= 0x3163) {
-    const jungseong = Object.values(JUNGSEONG_MAP).find((j) => j.char === char) || null
+    const jungseong = Object.values(jungseongMap).find((j) => j.char === char) || null
     const jungseongType = jungseong ? classifyJungseong(jungseong.char) : 'mixed'
     const layoutType: LayoutType =
       jungseongType === 'vertical'
@@ -131,8 +133,13 @@ function classifyLayout(
 }
 
 // ===== 문자열을 음절 단위로 분해 =====
-export function decomposeText(text: string): DecomposedSyllable[] {
-  return text.split('').map(decomposeSyllable)
+export function decomposeText(
+  text: string,
+  choseongMap: Record<string, JamoData>,
+  jungseongMap: Record<string, JamoData>,
+  jongseongMap: Record<string, JamoData>
+): DecomposedSyllable[] {
+  return text.split('').map(char => decomposeSyllable(char, choseongMap, jungseongMap, jongseongMap))
 }
 
 // ===== 한글인지 확인 =====

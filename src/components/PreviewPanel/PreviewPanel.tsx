@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
 import { SvgRenderer } from '../../renderers/SvgRenderer'
 import { useLayoutStore } from '../../stores/layoutStore'
+import { useJamoStore } from '../../stores/jamoStore'
 import { useUIStore } from '../../stores/uiStore'
 import { decomposeSyllable, isHangul } from '../../utils/hangulUtils'
 import type { DecomposedSyllable } from '../../types'
 import styles from './PreviewPanel.module.css'
 
 export function PreviewPanel() {
-  const { 
-    inputText, 
-    setInputText, 
-    selectedCharIndex, 
+  const {
+    inputText,
+    setInputText,
+    selectedCharIndex,
     setSelectedCharIndex,
     setViewMode,
     setControlMode,
@@ -18,6 +19,7 @@ export function PreviewPanel() {
     setSelectedLayoutType
   } = useUIStore()
   const { layoutConfigs } = useLayoutStore()
+  const { choseong, jungseong, jongseong } = useJamoStore()
   const [showDebug, setShowDebug] = useState(false)
 
   // 모든 한글 글자 분석
@@ -25,8 +27,8 @@ export function PreviewPanel() {
     return inputText
       .split('')
       .filter(isHangul)
-      .map(decomposeSyllable)
-  }, [inputText])
+      .map(char => decomposeSyllable(char, choseong, jungseong, jongseong))
+  }, [inputText, choseong, jungseong, jongseong])
 
   // 각 글자에 대한 렌더링 정보 (규칙 적용 제거, 직접 레이아웃 설정 사용)
   const renderedSyllables = useMemo(() => {

@@ -1,5 +1,5 @@
 import { useUIStore } from '../../stores/uiStore'
-import { JUNGSEONG_MAP } from '../../data/Hangul'
+import { useJamoStore } from '../../stores/jamoStore'
 import type { StrokeData, BoxConfig } from '../../types'
 import styles from './CharacterEditor.module.css'
 
@@ -27,7 +27,8 @@ const BOX_COLORS: Record<string, string> = {
 
 export function CharacterPreview({ jamoChar, strokes, boxInfo = { x: 0, y: 0, width: 1, height: 1 }, jamoType }: CharacterPreviewProps) {
   const { selectedStrokeId, setSelectedStrokeId, editingJamoType } = useUIStore()
-  
+  const { jungseong } = useJamoStore()
+
   // jamoType이 전달되지 않으면 store에서 가져오기
   const currentJamoType = jamoType || editingJamoType
 
@@ -37,7 +38,7 @@ export function CharacterPreview({ jamoChar, strokes, boxInfo = { x: 0, y: 0, wi
   let verticalStrokeIds: Set<string> | null = null
 
   if (isMixed) {
-    const jamo = JUNGSEONG_MAP[jamoChar]
+    const jamo = jungseong[jamoChar]
     if (jamo?.horizontalStrokes && jamo?.verticalStrokes) {
       horizontalStrokeIds = new Set(jamo.horizontalStrokes.map(s => s.id))
       verticalStrokeIds = new Set(jamo.verticalStrokes.map(s => s.id))

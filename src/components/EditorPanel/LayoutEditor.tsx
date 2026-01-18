@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useUIStore } from '../../stores/uiStore'
 import { useLayoutStore } from '../../stores/layoutStore'
+import { useJamoStore } from '../../stores/jamoStore'
 import { SplitEditor } from './SplitEditor'
 import { SvgRenderer } from '../../renderers/SvgRenderer'
 import { decomposeSyllable } from '../../utils/hangulUtils'
@@ -24,6 +25,7 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
     resetToBasePresets,
     _hydrated,
   } = useLayoutStore()
+  const { choseong, jungseong, jongseong } = useJamoStore()
 
   const schema = getLayoutSchema(layoutType)
   const modified = isModified()
@@ -41,7 +43,7 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
       })
       const selectedChar = hangulChars[selectedCharIndex]
       if (selectedChar) {
-        const syllable = decomposeSyllable(selectedChar)
+        const syllable = decomposeSyllable(selectedChar, choseong, jungseong, jongseong)
         // 레이아웃 타입이 일치하는지 확인
         if (syllable.layoutType === layoutType) {
           return syllable
@@ -52,7 +54,7 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
     // 입력 텍스트의 첫 번째 음절 확인
     const firstChar = inputText.trim()[0]
     if (firstChar) {
-      const syllable = decomposeSyllable(firstChar)
+      const syllable = decomposeSyllable(firstChar, choseong, jungseong, jongseong)
       // 레이아웃 타입이 일치하는지 확인
       if (syllable.layoutType === layoutType) {
         return syllable
@@ -73,8 +75,8 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
       'choseong-jungseong-mixed-jongseong': '궝',
     }
 
-    return decomposeSyllable(testChars[layoutType] || '한')
-  }, [inputText, selectedCharIndex, layoutType])
+    return decomposeSyllable(testChars[layoutType] || '한', choseong, jungseong, jongseong)
+  }, [inputText, selectedCharIndex, layoutType, choseong, jungseong, jongseong])
 
   const handleSave = () => {
     // Schema 기반이므로 변경사항은 자동으로 store에 반영됨 (LocalStorage에도 자동 저장)
