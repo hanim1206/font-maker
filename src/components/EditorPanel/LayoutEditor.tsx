@@ -4,6 +4,7 @@ import { useLayoutStore } from '../../stores/layoutStore'
 import { SplitEditor } from './SplitEditor'
 import { SvgRenderer } from '../../renderers/SvgRenderer'
 import { decomposeSyllable } from '../../utils/hangulUtils'
+import { downloadAsJson } from '../../utils/storage'
 import type { LayoutType } from '../../types'
 import styles from './LayoutEditor.module.css'
 
@@ -13,9 +14,20 @@ interface LayoutEditorProps {
 
 export function LayoutEditor({ layoutType }: LayoutEditorProps) {
   const { inputText, selectedCharIndex } = useUIStore()
-  const { getLayoutSchema, resetLayoutSchema, getCalculatedBoxes } = useLayoutStore()
+  const {
+    getLayoutSchema,
+    resetLayoutSchema,
+    getCalculatedBoxes,
+    isModified,
+    isLayoutModified,
+    exportSchemas,
+    resetToBasePresets,
+    _hydrated,
+  } = useLayoutStore()
 
   const schema = getLayoutSchema(layoutType)
+  const modified = isModified()
+  const currentLayoutModified = isLayoutModified(layoutType)
 
   // 테스트용 음절 (선택한 음절 우선, 없으면 입력 텍스트의 첫 번째 음절 또는 기본값)
   const testSyllable = useMemo(() => {
@@ -65,7 +77,7 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
   }, [inputText, selectedCharIndex, layoutType])
 
   const handleSave = () => {
-    // Schema 기반이므로 변경사항은 자동으로 store에 반영됨
+    // Schema 기반이므로 변경사항은 자동으로 store에 반영됨 (LocalStorage에도 자동 저장)
     // 콘솔에 현재 schema 출력 (디버그용)
     console.log('\n📋 현재 LayoutSchema:\n')
     console.log(JSON.stringify(schema, null, 2))
@@ -75,13 +87,35 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
     console.log('\n📦 계산된 BoxConfig:\n')
     console.log(JSON.stringify(boxes, null, 2))
 
-    alert('레이아웃 설정이 저장되었습니다!\n콘솔에서 설정값을 확인할 수 있습니다.')
+    alert('레이아웃 설정이 저장되었습니다!\n(LocalStorage에 자동 저장됨)')
   }
 
   const handleReset = () => {
-    if (confirm('기본값으로 되돌리시겠습니까?')) {
+    if (confirm(`'${layoutType}' 레이아웃을 기본값으로 되돌리시겠습니까?`)) {
       resetLayoutSchema(layoutType)
     }
+  }
+
+  const handleExport = () => {
+    const json = exportSchemas()
+    const timestamp = new Date().toISOString().slice(0, 10)
+    downloadAsJson(json, `basePresets-${timestamp}.json`)
+    alert('JSON 파일이 다운로드되었습니다.\nsrc/data/basePresets.json에 덮어씌우세요.')
+  }
+
+  const handleResetAll = () => {
+    if (confirm('모든 레이아웃을 기본값으로 되돌리시겠습니까?\n저장된 작업이 모두 사라집니다.')) {
+      resetToBasePresets()
+    }
+  }
+
+  // Hydration 전에는 로딩 표시
+  if (!_hydrated) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>로딩 중...</div>
+      </div>
+    )
   }
 
   if (!schema) {
@@ -94,6 +128,21 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
 
   return (
     <div className={styles.container}>
+      {/* 변경 감지 배지 */}
+      {modified && (
+        <div className={styles.modifiedBadge}>
+          <span className={styles.modifiedDot}></span>
+          수정됨 (basePresets.json과 다름)
+        </div>
+      )}
+
+      {/* 현재 레이아웃 변경 표시 */}
+      {currentLayoutModified && (
+        <div className={styles.currentLayoutModified}>
+          현재 레이아웃 수정됨
+        </div>
+      )}
+
       {/* 미리보기 영역 */}
       <div className={styles.previewSection}>
         <h3 className={styles.sectionTitle}>미리보기</h3>
@@ -123,6 +172,16 @@ export function LayoutEditor({ layoutType }: LayoutEditorProps) {
         </button>
         <button onClick={handleReset} className={styles.resetButton}>
           되돌리기
+        </button>
+      </div>
+
+      {/* 내보내기/전체 리셋 영역 */}
+      <div className={styles.exportSection}>
+        <button onClick={handleExport} className={styles.exportButton}>
+          JSON 내보내기
+        </button>
+        <button onClick={handleResetAll} className={styles.resetAllButton}>
+          전체 초기화
         </button>
       </div>
     </div>

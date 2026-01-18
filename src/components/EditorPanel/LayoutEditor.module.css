@@ -80,3 +80,98 @@
   background: #3a3a3a;
   color: #e0e0e0;
 }
+
+/* 로딩 상태 */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* 변경 감지 배지 */
+.modifiedBadge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 193, 7, 0.12);
+  border: 1px solid rgba(255, 193, 7, 0.3);
+  border-radius: 6px;
+  color: #ffc107;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+}
+
+.modifiedDot {
+  width: 8px;
+  height: 8px;
+  background: #ffc107;
+  border-radius: 50%;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.9);
+  }
+}
+
+/* 현재 레이아웃 수정됨 표시 */
+.currentLayoutModified {
+  padding: 6px 12px;
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 4px;
+  color: #3b82f6;
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* 내보내기/전체 리셋 영역 */
+.exportSection {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #1a1a1a;
+}
+
+.exportButton,
+.resetAllButton {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.exportButton {
+  background: #1a5c3e;
+  color: #fff;
+}
+
+.exportButton:hover {
+  background: #2a7c4e;
+}
+
+.resetAllButton {
+  background: #5c1a1a;
+  color: #fff;
+}
+
+.resetAllButton:hover {
+  background: #7c2a2a;
+}

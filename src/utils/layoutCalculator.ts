@@ -1,4 +1,5 @@
 import type { LayoutSchema, BoxConfig, Part, Padding, LayoutType } from '../types'
+import basePresets from '../data/basePresets.json'
 
 // 기본 패딩 값
 const DEFAULT_PADDING: Padding = {
@@ -307,90 +308,14 @@ export function getDefaultSchema(layoutType: LayoutType): LayoutSchema {
 }
 
 /**
- * 기본 레이아웃 스키마 정의
+ * 기본 레이아웃 스키마 정의 (basePresets.json에서 로드)
  */
-export const DEFAULT_LAYOUT_SCHEMAS: Record<LayoutType, LayoutSchema> = {
-  'choseong-only': {
-    id: 'choseong-only',
-    slots: ['CH'],
-    padding: { top: 0.15, bottom: 0.15, left: 0.15, right: 0.15 },
-  },
+export const DEFAULT_LAYOUT_SCHEMAS: Record<LayoutType, LayoutSchema> =
+  basePresets.schemas as Record<LayoutType, LayoutSchema>
 
-  'jungseong-vertical-only': {
-    id: 'jungseong-vertical-only',
-    slots: ['JU'],
-    padding: { top: 0.1, bottom: 0.1, left: 0.25, right: 0.25 },
-  },
-
-  'jungseong-horizontal-only': {
-    id: 'jungseong-horizontal-only',
-    slots: ['JU'],
-    padding: { top: 0.3, bottom: 0.3, left: 0.1, right: 0.1 },
-  },
-
-  'jungseong-mixed-only': {
-    id: 'jungseong-mixed-only',
-    slots: ['JU_H', 'JU_V'],
-    splits: [
-      { axis: 'x', value: 0.5 },
-      { axis: 'y', value: 0.5 },
-    ],
-    padding: { top: 0.15, bottom: 0.15, left: 0.15, right: 0.15 },
-  },
-
-  'choseong-jungseong-vertical': {
-    id: 'choseong-jungseong-vertical',
-    slots: ['CH', 'JU'],
-    splits: [{ axis: 'x', value: 0.63 }],
-    padding: { top: 0.1, bottom: 0.1, left: 0.08, right: 0.08 },
-  },
-
-  'choseong-jungseong-horizontal': {
-    id: 'choseong-jungseong-horizontal',
-    slots: ['CH', 'JU'],
-    splits: [{ axis: 'y', value: 0.55 }],
-    padding: { top: 0.05, bottom: 0.05, left: 0.1, right: 0.1 },
-  },
-
-  'choseong-jungseong-mixed': {
-    id: 'choseong-jungseong-mixed',
-    slots: ['CH', 'JU_H', 'JU_V'],
-    splits: [
-      { axis: 'x', value: 0.58 },
-      { axis: 'y', value: 0.55 },
-    ],
-    padding: { top: 0.1, bottom: 0.1, left: 0.08, right: 0.07 },
-  },
-
-  'choseong-jungseong-vertical-jongseong': {
-    id: 'choseong-jungseong-vertical-jongseong',
-    slots: ['CH', 'JU', 'JO'],
-    splits: [
-      { axis: 'x', value: 0.62 },
-      { axis: 'y', value: 0.55 },
-    ],
-    padding: { top: 0.05, bottom: 0.05, left: 0.08, right: 0.08 },
-  },
-
-  'choseong-jungseong-horizontal-jongseong': {
-    id: 'choseong-jungseong-horizontal-jongseong',
-    slots: ['CH', 'JU', 'JO'],
-    splits: [
-      { axis: 'y', value: 0.37 },
-      { axis: 'y', value: 0.60 },
-    ],
-    padding: { top: 0.02, bottom: 0.03, left: 0.1, right: 0.1 },
-  },
-
-  'choseong-jungseong-mixed-jongseong': {
-    id: 'choseong-jungseong-mixed-jongseong',
-    slots: ['CH', 'JU_H', 'JU_V', 'JO'],
-    splits: [
-      { axis: 'x', value: 0.58 },
-      { axis: 'y', value: 0.55 },
-      { axis: 'y', value: 0.76 },
-    ],
-    padding: { top: 0.05, bottom: 0.05, left: 0.08, right: 0.06 },
-  },
-}
+/**
+ * basePresets.json의 원본 데이터 (변경 감지용)
+ */
+export const BASE_PRESETS_SCHEMAS: Record<LayoutType, LayoutSchema> =
+  basePresets.schemas as Record<LayoutType, LayoutSchema>
 

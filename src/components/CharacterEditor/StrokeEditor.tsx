@@ -11,7 +11,9 @@ interface StrokeEditorProps {
 const MOVE_STEP = 0.01
 const RESIZE_STEP = 0.01
 
-export function StrokeEditor({ strokes, onChange, boxInfo = { x: 0, y: 0, width: 1, height: 1 } }: StrokeEditorProps) {
+export function StrokeEditor({ strokes, onChange, boxInfo: _boxInfo = { x: 0, y: 0, width: 1, height: 1 } }: StrokeEditorProps) {
+  // TODO: _boxInfo를 사용하여 박스 영역 내에서만 이동 가능하도록 제한
+  void _boxInfo
   const { selectedStrokeId } = useUIStore()
   const selectedStroke = strokes.find((s) => s.id === selectedStrokeId)
   

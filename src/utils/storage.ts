@@ -4,6 +4,7 @@ const STORAGE_KEYS = {
   PRESETS: 'font-maker-presets',
   RULES: 'font-maker-rules',
   UI_STATE: 'font-maker-ui-state',
+  LAYOUT_SCHEMAS: 'font-maker-layout-schemas',
 } as const
 
 // ===== 프리셋 저장/불러오기 =====
@@ -111,8 +112,22 @@ export function clearAllData(): void {
     localStorage.removeItem(STORAGE_KEYS.PRESETS)
     localStorage.removeItem(STORAGE_KEYS.RULES)
     localStorage.removeItem(STORAGE_KEYS.UI_STATE)
+    localStorage.removeItem(STORAGE_KEYS.LAYOUT_SCHEMAS)
   } catch (error) {
     console.error('스토리지 초기화 실패:', error)
   }
+}
+
+// ===== JSON 파일 다운로드 =====
+export function downloadAsJson(data: string, filename: string): void {
+  const blob = new Blob([data], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
 }
 
