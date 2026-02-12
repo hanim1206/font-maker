@@ -445,6 +445,62 @@
   font-family: monospace;
 }
 
+/* 패스 포인트 목록 */
+.pointList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+}
+
+.pointItem {
+  padding: 0.4rem 0.75rem;
+  background: #0f0f0f;
+  color: #e5e5e5;
+  border: 1px solid #333;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pointItem:hover {
+  background: #222;
+  border-color: #444;
+}
+
+.pointActive {
+  padding: 0.4rem 0.75rem;
+  background: #4ecdc4 !important;
+  border: 1px solid #4ecdc4;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #000 !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 포인트 속성 */
+.pointProperties {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 핸들 그룹 */
+.handleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: #151515;
+  border-radius: 4px;
+  border: 1px solid #2a2a2a;
+}
+
 /* 모바일 대응 */
 @media (max-width: 1024px) {
   /* 태블릿: 3단 → 수직 레이아웃 */

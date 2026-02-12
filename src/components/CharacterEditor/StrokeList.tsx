@@ -28,7 +28,7 @@ export function StrokeList({ strokes }: StrokeListProps) {
             className={selectedStrokeId === stroke.id ? styles.strokeActive : ''}
             onClick={() => setSelectedStrokeId(stroke.id)}
           >
-            {stroke.id} ({stroke.direction === 'horizontal' ? '가로' : '세로'})
+            {stroke.id} ({stroke.direction === 'horizontal' ? '가로' : stroke.direction === 'vertical' ? '세로' : '패스'})
           </button>
         ))}
       </div>

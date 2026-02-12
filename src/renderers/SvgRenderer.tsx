@@ -1,6 +1,8 @@
 import { useMemo } from 'react'
 import type { DecomposedSyllable, BoxConfig, Part, StrokeData, LayoutType, LayoutSchema } from '../types'
+import { isPathStroke } from '../types'
 import { calculateBoxes } from '../utils/layoutCalculator'
+import { pathDataToSvgD } from '../utils/pathUtils'
 
 interface SvgRendererProps {
   syllable: DecomposedSyllable
@@ -71,11 +73,30 @@ export function SvgRenderer({
       // 박스 내 상대 좌표를 절대 좌표로 변환
       const baseX = (box.x + stroke.x * box.width) * VIEW_BOX_SIZE
       const baseY = (box.y + stroke.y * box.height) * VIEW_BOX_SIZE
-      
+
+      // === PATH 스트로크 (곡선) ===
+      if (isPathStroke(stroke)) {
+        const pathWidth = stroke.width * box.width * VIEW_BOX_SIZE
+        const pathHeight = stroke.height * box.height * VIEW_BOX_SIZE
+        const d = pathDataToSvgD(stroke.pathData, baseX, baseY, pathWidth, pathHeight)
+        return (
+          <path
+            key={stroke.id}
+            d={d}
+            fill="none"
+            stroke={color}
+            strokeWidth={STROKE_THICKNESS}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        )
+      }
+
+      // === RECT 스트로크 (기존 직선) ===
       // 방향에 따라 두께 고정: 가로획은 height 고정, 세로획은 width 고정
       let width: number
       let height: number
-      
+
       if (stroke.direction === 'horizontal') {
         // 가로획: height를 고정값으로, width는 박스 크기에 비례
         width = stroke.width * box.width * VIEW_BOX_SIZE

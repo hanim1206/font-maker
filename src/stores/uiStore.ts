@@ -23,6 +23,8 @@ interface UIState {
   editingJamoChar: string | null
   // 선택된 획 ID
   selectedStrokeId: string | null
+  // 선택된 패스 포인트 인덱스
+  selectedPointIndex: number | null
 }
 
 interface UIActions {
@@ -36,6 +38,7 @@ interface UIActions {
   setSelectedLayoutType: (layoutType: LayoutType | null) => void
   setEditingJamo: (type: 'choseong' | 'jungseong' | 'jongseong' | null, char: string | null) => void
   setSelectedStrokeId: (id: string | null) => void
+  setSelectedPointIndex: (index: number | null) => void
 }
 
 export const useUIStore = create<UIState & UIActions>()(
@@ -52,6 +55,7 @@ export const useUIStore = create<UIState & UIActions>()(
     editingJamoType: null,
     editingJamoChar: null,
     selectedStrokeId: null,
+    selectedPointIndex: null,
 
     // 액션
     setViewMode: (mode) =>
@@ -94,6 +98,12 @@ export const useUIStore = create<UIState & UIActions>()(
     setSelectedStrokeId: (id) =>
       set((state) => {
         state.selectedStrokeId = id
+        state.selectedPointIndex = null
+      }),
+
+    setSelectedPointIndex: (index) =>
+      set((state) => {
+        state.selectedPointIndex = index
       }),
   }))
 )

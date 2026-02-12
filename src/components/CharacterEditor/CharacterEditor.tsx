@@ -8,6 +8,7 @@ import { StrokeList } from './StrokeList'
 import { StrokeEditor } from './StrokeEditor'
 import { StrokeInspector } from './StrokeInspector'
 import type { StrokeData, JamoData, BoxConfig } from '../../types'
+import { isPathStroke } from '../../types'
 import styles from './CharacterEditor.module.css'
 
 function getJamoMap(type: 'choseong' | 'jungseong' | 'jongseong'): Record<string, JamoData> {
@@ -23,6 +24,9 @@ function getJamoMap(type: 'choseong' | 'jungseong' | 'jongseong'): Record<string
 
 function generateStrokeCode(strokes: StrokeData[], char: string, type: string): string {
   const formatStroke = (s: StrokeData) => {
+    if (s.direction === 'path' && 'pathData' in s) {
+      return `      { id: '${s.id}', x: ${s.x}, y: ${s.y}, width: ${s.width}, height: ${s.height}, direction: 'path', pathData: ${JSON.stringify(s.pathData)} },`
+    }
     const fn = s.direction === 'horizontal' ? 'h' : 'v'
     return `      ${fn}('${s.id}', ${s.x}, ${s.y}, ${s.width}, ${s.height}),`
   }
@@ -245,6 +249,28 @@ export function CharacterEditor() {
     )
   }
 
+  const handlePathPointChange = (
+    strokeId: string,
+    pointIndex: number,
+    field: 'x' | 'y' | 'handleIn' | 'handleOut',
+    value: { x: number; y: number } | number
+  ) => {
+    setDraftStrokes(prev => prev.map(s => {
+      if (s.id !== strokeId || !isPathStroke(s)) return s
+      const newPoints = s.pathData.points.map((p, i) => {
+        if (i !== pointIndex) return p
+        const updated = { ...p }
+        if (field === 'x' || field === 'y') {
+          updated[field] = value as number
+        } else {
+          updated[field] = value as { x: number; y: number }
+        }
+        return updated
+      })
+      return { ...s, pathData: { ...s.pathData, points: newPoints } }
+    }))
+  }
+
   const handleSave = () => {
     if (!editingJamoChar || !editingJamoType) return
 
@@ -319,11 +345,12 @@ export function CharacterEditor() {
 
             {/* 중앙: 큰 미리보기 + 키보드 힌트 */}
             <div className={styles.centerPanel}>
-              <CharacterPreview 
-                jamoChar={editingJamoChar} 
+              <CharacterPreview
+                jamoChar={editingJamoChar}
                 strokes={draftStrokes}
                 boxInfo={jamoBoxInfo}
                 jamoType={editingJamoType || undefined}
+                onPathPointChange={handlePathPointChange}
               />
               <p className={styles.keyboardHint}>
                 방향키: 위치 이동 | Shift + 방향키: 크기 조절
@@ -332,12 +359,12 @@ export function CharacterEditor() {
 
             {/* 우측: Stroke Inspector */}
             <div className={styles.rightPanel}>
-              <StrokeInspector strokes={draftStrokes} onChange={handleStrokeChange} />
+              <StrokeInspector strokes={draftStrokes} onChange={handleStrokeChange} onPathPointChange={handlePathPointChange} />
             </div>
           </div>
 
           {/* 키보드 컨트롤 (UI 없음) */}
-          <StrokeEditor strokes={draftStrokes} onChange={handleStrokeChange} boxInfo={jamoBoxInfo} />
+          <StrokeEditor strokes={draftStrokes} onChange={handleStrokeChange} onPathPointChange={handlePathPointChange} boxInfo={jamoBoxInfo} />
 
           {/* 버튼 그룹 */}
           <div className={styles.buttonGroup}>

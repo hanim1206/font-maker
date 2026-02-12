@@ -97,14 +97,42 @@ export interface Rule {
   enabled: boolean
 }
 
+// ===== 패스 데이터 (곡선 지원) =====
+export interface PathPoint {
+  x: number // 0~1, 스트로크 바운딩 박스 내 상대 좌표
+  y: number
+  handleIn?: { x: number; y: number } // 이전 점에서 들어오는 베지어 제어 핸들
+  handleOut?: { x: number; y: number } // 다음 점으로 나가는 베지어 제어 핸들
+}
+
+export interface PathData {
+  points: PathPoint[]
+  closed: boolean // true: 닫힌 패스 (ㅇ 원형 등)
+}
+
 // ===== 획 데이터 =====
-export interface StrokeData {
+interface StrokeBase {
   id: string
   x: number // 0~1 상대 좌표
   y: number
-  width: number
+  width: number // 0~1 상대 크기
   height: number
+}
+
+export interface RectStrokeData extends StrokeBase {
   direction: 'horizontal' | 'vertical'
+}
+
+export interface PathStrokeData extends StrokeBase {
+  direction: 'path'
+  pathData: PathData
+}
+
+export type StrokeData = RectStrokeData | PathStrokeData
+
+// 타입 가드
+export function isPathStroke(stroke: StrokeData): stroke is PathStrokeData {
+  return stroke.direction === 'path'
 }
 
 // ===== 자모 데이터 =====
